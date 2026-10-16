@@ -10,7 +10,7 @@ const JDBLAB_STAMP_SIZE = Object.freeze({
 })
 
 function text(docx, value, options = {}) {
-  return new docx.TextRun({ text: String(value || ''), font: 'Arial', size: 20, ...options })
+  return new docx.TextRun({ text: String(value || ''), font: 'Arial', size: 24, ...options })
 }
 function paragraph(docx, value, options = {}) {
   return new docx.Paragraph({ children: [text(docx, value, options.run)], alignment: options.alignment, spacing: options.spacing || { after: 0 } })
@@ -102,7 +102,7 @@ function download(blob, name) {
 
 export async function downloadCertificadoWord(certificado, logoSource) {
   const docx = await import('docx')
-  const logo = await imageRun(logoSource, docx, 150, 65)
+  const logo = await imageRun(logoSource, docx, 165, 72)
   const signatureMaxSize = certificado.empresaFirmante
     ? { width: 170, height: 80 }
     : { width: 150, height: 70 }
@@ -115,7 +115,7 @@ export async function downloadCertificadoWord(certificado, logoSource) {
   const stampSize = certificado.empresaFirmante === 'jdblab' ? JDBLAB_STAMP_SIZE : undefined
   const stamp = await imageRun(certificado.selloImagen, docx, 150, 80, stampSize)
   const header = new docx.Table({ width: { size: 100, type: docx.WidthType.PERCENTAGE }, borders, rows: [
-    new docx.TableRow({ children: [cell(docx, [new docx.Paragraph({ children: logo ? [logo] : [], alignment: docx.AlignmentType.CENTER })], { rowSpan: 3, width: 22 }), cell(docx, [paragraph(docx, 'SISTEMA DE GESTIÓN DE LA CALIDAD', { alignment: docx.AlignmentType.CENTER, run: { bold: true, size: 24 } })], { width: 48 }), cell(docx, 'Código', { width: 12 }), cell(docx, certificado.codigo, { width: 18 })] }),
+    new docx.TableRow({ children: [cell(docx, [new docx.Paragraph({ children: logo ? [logo] : [], alignment: docx.AlignmentType.CENTER })], { rowSpan: 3, width: 24 }), cell(docx, [paragraph(docx, 'SISTEMA DE GESTIÓN DE LA CALIDAD', { alignment: docx.AlignmentType.CENTER, run: { bold: true, size: 24 } })], { width: 46 }), cell(docx, 'Código', { width: 12 }), cell(docx, certificado.codigo, { width: 18 })] }),
     new docx.TableRow({ children: [cell(docx, 'REGISTRO'), cell(docx, 'Revisión'), cell(docx, certificado.revision)] }),
     new docx.TableRow({ children: [cell(docx, 'CERTIFICADO DE GARANTÍA'), cell(docx, 'Página'), cell(docx, [new docx.Paragraph({ children: [new docx.SimpleField('PAGE'), text(docx, ' de '), new docx.SimpleField('NUMPAGES')], alignment: docx.AlignmentType.CENTER })])] }),
   ] })

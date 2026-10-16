@@ -89,7 +89,7 @@ async function buildCartaPdf(carta) {
       // 1. Date and City (Right aligned)
       const dateText = formatLetterDate(carta.fecha, cleanText(carta.ciudadFecha));
       if (dateText) {
-        doc.font('Helvetica').fontSize(9.5).fillColor('#111111')
+        doc.font('Helvetica').fontSize(12).fillColor('#111111')
           .text(dateText, left, currentY, { width: contentWidth, align: 'right' });
         currentY = doc.y + 14;
       }
@@ -110,11 +110,11 @@ async function buildCartaPdf(carta) {
           const isPresente = line === cleanText(carta.presente);
 
           if (isDestinatario) {
-            doc.font('Helvetica-Bold').fontSize(9.5).fillColor('#111111');
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#111111');
           } else if (isPresente) {
-            doc.font('Helvetica-Bold').fontSize(9.5).fillColor('#111111');
+            doc.font('Helvetica-Bold').fontSize(12).fillColor('#111111');
           } else {
-            doc.font('Helvetica').fontSize(9.5).fillColor('#222222');
+            doc.font('Helvetica').fontSize(12).fillColor('#222222');
           }
 
           doc.text(line, left, currentY, { width: contentWidth, align: 'left' });
@@ -129,12 +129,12 @@ async function buildCartaPdf(carta) {
 
       if (refText || numText) {
         if (refText) {
-          doc.font('Helvetica-Bold').fontSize(9.5).fillColor('#111111')
+          doc.font('Helvetica-Bold').fontSize(12).fillColor('#111111')
             .text(`REF.: ${refText}`, left, currentY, { width: contentWidth, align: 'left' });
           currentY = doc.y + 2;
         }
         if (numText) {
-          doc.font('Helvetica-Bold').fontSize(9.5).fillColor('#111111')
+          doc.font('Helvetica-Bold').fontSize(12).fillColor('#111111')
             .text(`N.º ${numText}`, left, currentY, { width: contentWidth, align: 'left' });
           currentY = doc.y + 2;
         }
@@ -149,7 +149,7 @@ async function buildCartaPdf(carta) {
         const paragraph = paragraphs[pIndex].trim();
         if (!paragraph) continue;
 
-        doc.font('Helvetica').fontSize(9.5).fillColor('#222222');
+        doc.font('Helvetica').fontSize(12).fillColor('#222222');
         const textH = doc.heightOfString(paragraph, { width: contentWidth, align: 'justify' });
 
         if (currentY + textH > bottomLimit - 50) {
@@ -169,7 +169,7 @@ async function buildCartaPdf(carta) {
       // 5. Farewell
       const despedida = cleanText(carta.despedida);
       if (despedida) {
-        doc.font('Helvetica').fontSize(9.5).fillColor('#222222');
+        doc.font('Helvetica').fontSize(12).fillColor('#222222');
         const despH = doc.heightOfString(despedida, { width: contentWidth });
 
         if (currentY + despH > bottomLimit - 50) {
@@ -203,28 +203,28 @@ async function buildCartaPdf(carta) {
 
       const firmanteNombre = cleanText(carta.firmanteNombre) || preset?.firmanteNombre;
       if (firmanteNombre) {
-        doc.font('Helvetica-Bold').fontSize(9).fillColor('#111111')
+        doc.font('Helvetica-Bold').fontSize(12).fillColor('#111111')
           .text(firmanteNombre, sigBlockX, sY, { width: sigBlockW, align: 'center' });
         sY += 11;
       }
 
       const firmanteCargo = cleanText(carta.firmanteCargo) || preset?.firmanteCargo;
       if (firmanteCargo) {
-        doc.font('Helvetica').fontSize(8.5).fillColor('#333333')
+        doc.font('Helvetica').fontSize(12).fillColor('#333333')
           .text(firmanteCargo, sigBlockX, sY, { width: sigBlockW, align: 'center' });
         sY += 10;
       }
 
       const firmanteDoc = cleanText(carta.firmanteDocumento) || preset?.firmanteDocumento;
       if (firmanteDoc) {
-        doc.font('Helvetica').fontSize(8).fillColor('#333333')
+        doc.font('Helvetica').fontSize(12).fillColor('#333333')
           .text(firmanteDoc, sigBlockX, sY, { width: sigBlockW, align: 'center' });
         sY += 9;
       }
 
       const firmanteTel = cleanText(carta.firmanteTelefono) || preset?.firmanteTelefono;
       if (firmanteTel) {
-        doc.font('Helvetica').fontSize(8).fillColor('#333333')
+        doc.font('Helvetica').fontSize(12).fillColor('#333333')
           .text(firmanteTel, sigBlockX, sY, { width: sigBlockW, align: 'center' });
         sY += 9;
       }

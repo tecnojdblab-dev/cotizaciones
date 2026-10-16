@@ -1,6 +1,6 @@
 export const DOCUMENT_FOOTER_TEXT = 'TELÉFONO: 4-4292937 – CEL: 70769521 – AV. CIRCUNVALACIÓN, ENTRE C. VATICANO Y C.F. PÉREZ SAAVEDRA,\nCOCHABAMBA - BOLIVIA'
 
-export function createDocumentWordFooter(docx, fontSize = 18) {
+export function createDocumentWordFooter(docx, fontSize = 20) {
   return new docx.Footer({
     children: [new docx.Paragraph({
       children: [new docx.TextRun({
