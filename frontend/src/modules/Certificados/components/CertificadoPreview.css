@@ -51,27 +51,27 @@
 .certificado-preview__signature .certificado-preview__stamp-image {
   display: block;
   width: auto;
-  max-width: 55%;
+  max-width: 61%;
   height: auto;
-  max-height: clamp(34px, 9cqw, 72px);
+  max-height: clamp(38px, 10cqw, 80px);
   margin: 0 auto 4px;
   object-fit: contain;
 }
 
 .certificado-preview__signature .certificado-preview__stamp-image {
-  max-width: 62%;
+  max-width: 69%;
   margin-top: 6px;
 }
 
 .certificado-preview__signature .certificado-preview__signature-image--preset {
-  max-width: 65%;
-  max-height: clamp(40px, 10.5cqw, 84px);
+  max-width: 72%;
+  max-height: clamp(44px, 11.5cqw, 92px);
 }
 
 .certificado-preview__signature .certificado-preview__stamp-image--jdblab {
-  width: 4.5cm;
+  width: 5cm;
   max-width: none;
-  height: 1.8cm;
+  height: 2cm;
   max-height: none;
 }
 

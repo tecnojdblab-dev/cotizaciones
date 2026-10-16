@@ -39,19 +39,19 @@
   align-items: center;
   justify-content: center;
   gap: 1.2cqw;
-  height: clamp(40px, 10.5cqw, 84px);
+  height: clamp(44px, 11.5cqw, 92px);
 }
 
 /* Match certificate image limits relative to the page, not the narrower note columns.
    Certificates use a min(55%, 340px) signature block with 55%/65%/62% image limits. */
 .nota-preview__signatures .nota-preview__signature-space img {
-  max-width: min(30.25cqw, 187px);
-  max-height: clamp(34px, 9cqw, 72px);
+  max-width: min(33.25cqw, 206px);
+  max-height: clamp(38px, 10cqw, 80px);
 }
 
 .nota-preview__signatures .nota-preview__signature-space .nota-preview__signature-image--preset {
-  max-width: min(35.75cqw, 221px);
-  max-height: clamp(40px, 10.5cqw, 84px);
+  max-width: min(39.25cqw, 243px);
+  max-height: clamp(44px, 11.5cqw, 92px);
 }
 
 .nota-preview__signatures .nota-preview__stamp {
@@ -59,15 +59,15 @@
   margin: 6px auto 4px;
   width: auto;
   height: auto;
-  max-width: min(34.1cqw, 210.8px);
-  max-height: clamp(34px, 9cqw, 72px);
+  max-width: min(37.5cqw, 232px);
+  max-height: clamp(38px, 10cqw, 80px);
   object-fit: contain;
 }
 
 .nota-preview__signatures .nota-preview__stamp--jdblab {
-  width: 4.5cm;
+  width: 5cm;
   max-width: none;
-  height: 1.8cm;
+  height: 2cm;
   max-height: none;
 }
 

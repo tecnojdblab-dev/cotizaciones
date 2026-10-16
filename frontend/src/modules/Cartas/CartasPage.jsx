@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { Alert, Button, Card, message, Modal, Segmented, Space, Spin, Typography } from 'antd'
 import {
   DownloadOutlined,
@@ -25,9 +25,8 @@ export default function CartasPage() {
   const [formCarta, setFormCarta] = useState(createEmptyCarta)
   const [draft, setDraft] = useState(createEmptyCarta)
   const [viewingCarta, setViewingCarta] = useState(null)
-  const [pdfQueue, setPdfQueue] = useState(null)
+  const [pdfLoading, setPdfLoading] = useState(false)
   const [wordExporting, setWordExporting] = useState(false)
-  const pdfPreviewRef = useRef(null)
 
   const handleDraftChange = useCallback((values) => {
     setDraft(normalizeCarta(values))
@@ -35,21 +34,17 @@ export default function CartasPage() {
 
   const handlePdfDownload = useCallback(async (carta) => {
     if (!carta) return
-    setPdfQueue(carta)
-    await new Promise((resolve) => requestAnimationFrame(resolve))
-
-    if (!pdfPreviewRef.current) {
-      setPdfQueue(null)
-      message.error('No se pudo preparar la vista previa para exportar el PDF')
-      return
-    }
-
+    setPdfLoading(true)
+    const hideMessage = message.loading('Generando PDF...', 0)
     try {
-      await downloadCartaPdf(carta, pdfPreviewRef.current)
+      await downloadCartaPdf(carta)
+      message.success('PDF descargado correctamente')
     } catch (exportError) {
+      console.error('[Cartas] Error al exportar PDF:', exportError)
       message.error(exportError.message || 'No se pudo generar el PDF')
     } finally {
-      setPdfQueue(null)
+      hideMessage()
+      setPdfLoading(false)
     }
   }, [])
 
@@ -172,7 +167,13 @@ export default function CartasPage() {
                 >
                   Word
                 </Button>
-                <Button icon={<FilePdfOutlined />} disabled={!draft.destinatario} onClick={() => handlePdfDownload(draft)}>
+                <Button
+                  icon={<FilePdfOutlined />}
+                  type="primary"
+                  loading={pdfLoading}
+                  disabled={!draft.destinatario}
+                  onClick={() => handlePdfDownload(draft)}
+                >
                   PDF
                 </Button>
               </Space>
@@ -208,17 +209,27 @@ export default function CartasPage() {
         open={Boolean(viewingCarta)}
         onCancel={() => setViewingCarta(null)}
         width={900}
-        footer={viewingCarta ? [
-          <Button
-            key="word"
-            icon={<FileWordOutlined />}
-            loading={wordExporting}
-            onClick={() => handleWord(viewingCarta)}
-          >
-            Word
-          </Button>,
-          <Button key="pdf" type="primary" icon={<DownloadOutlined />} onClick={() => handlePdfDownload(viewingCarta)}>PDF</Button>,
-        ] : null}
+        footer={
+          viewingCarta ? [
+            <Button
+              key="word"
+              icon={<FileWordOutlined />}
+              loading={wordExporting}
+              onClick={() => handleWord(viewingCarta)}
+            >
+              Word
+            </Button>,
+            <Button
+              key="pdf"
+              type="primary"
+              icon={<DownloadOutlined />}
+              loading={pdfLoading}
+              onClick={() => handlePdfDownload(viewingCarta)}
+            >
+              PDF
+            </Button>,
+          ] : null
+        }
       >
         {viewingCarta && (
           <div className="carta-view-modal__scroll">
@@ -226,12 +237,6 @@ export default function CartasPage() {
           </div>
         )}
       </Modal>
-
-      {pdfQueue && (
-        <div className="carta-pdf-sandbox" aria-hidden="true">
-          <CartaPreview ref={pdfPreviewRef} carta={pdfQueue} />
-        </div>
-      )}
     </div>
   )
 }

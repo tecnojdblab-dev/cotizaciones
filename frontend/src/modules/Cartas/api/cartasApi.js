@@ -3,6 +3,18 @@ import { FIRMANTE_PRESETS } from '../../../shared/utils/firmantePresets.js'
 
 const BASE_URL = '/cartas'
 
+function toDateInputValue(value) {
+  if (!value) return ''
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? '' : value.toISOString().slice(0, 10)
+  }
+  const text = String(value).trim()
+  const isoDate = text.match(/^\d{4}-\d{2}-\d{2}/)?.[0]
+  if (isoDate) return isoDate
+  const parsed = new Date(text)
+  return Number.isNaN(parsed.getTime()) ? '' : parsed.toISOString().slice(0, 10)
+}
+
 function toFrontendCarta(carta) {
   const preset = carta.empresaFirmante ? FIRMANTE_PRESETS[carta.empresaFirmante] : null
 
@@ -10,7 +22,7 @@ function toFrontendCarta(carta) {
     id: String(carta.idCarta),
     clienteId: carta.idCliente ? String(carta.idCliente) : undefined,
     ciudadFecha: carta.ciudadFecha,
-    fecha: String(carta.fecha).slice(0, 10),
+    fecha: toDateInputValue(carta.fecha),
     numero: carta.numero || '',
     tratamiento: carta.tratamiento || '',
     destinatario: carta.destinatario,
@@ -83,4 +95,13 @@ export async function updateCarta(id, carta, fetchOptions = {}) {
 
 export async function deleteCarta(id, fetchOptions = {}) {
   await apiDelete(`${BASE_URL}/${id}`, fetchOptions)
+}
+
+export async function downloadCartaPdf(id) {
+  return apiGet(`${BASE_URL}/${id}/pdf`, { responseType: 'blob' })
+}
+
+export async function downloadCartaDraftPdf(carta) {
+  const payload = toApiPayload(carta)
+  return apiPost(`${BASE_URL}/pdf`, payload, { responseType: 'blob' })
 }

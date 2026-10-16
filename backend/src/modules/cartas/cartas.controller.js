@@ -7,6 +7,7 @@ const {
   deleteCarta,
 } = require('./cartas.service');
 const { createCartaSchema, updateCartaSchema, formatZodError } = require('./cartas.validation');
+const { buildCartaPdf } = require('./cartas.pdf');
 
 function parseId(value, label = 'id_carta') {
   try {
@@ -80,4 +81,31 @@ async function remove(req, res) {
   }
 }
 
-module.exports = { list, getById, create, update, remove };
+async function getPdf(req, res) {
+  const carta = await getCartaById(parseId(req.params.id));
+  if (!carta) throw new HttpError(404, 'Carta no encontrada');
+  const buffer = await buildCartaPdf(carta);
+  const filename = `carta-${carta.numero || carta.idCarta || 'documento'}.pdf`;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.status(200).send(buffer);
+}
+
+async function downloadDraftPdf(req, res) {
+  const payload = req.body || {};
+  const buffer = await buildCartaPdf(payload);
+  const filename = `carta-${payload.numero || 'documento'}.pdf`;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.status(200).send(buffer);
+}
+
+module.exports = {
+  list,
+  getById,
+  create,
+  update,
+  remove,
+  getPdf,
+  downloadDraftPdf,
+};

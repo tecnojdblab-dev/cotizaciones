@@ -3,6 +3,18 @@ import { FIRMANTE_PRESETS } from '../../../shared/utils/firmantePresets.js'
 
 const BASE_URL = '/certificados'
 
+function toDateInputValue(value) {
+  if (!value) return ''
+  if (value instanceof Date) {
+    return Number.isNaN(value.getTime()) ? '' : value.toISOString().slice(0, 10)
+  }
+  const text = String(value).trim()
+  const isoDate = text.match(/^\d{4}-\d{2}-\d{2}/)?.[0]
+  if (isoDate) return isoDate
+  const parsed = new Date(text)
+  return Number.isNaN(parsed.getTime()) ? '' : parsed.toISOString().slice(0, 10)
+}
+
 function toFrontendItem(item) {
   const id = item.idProducto ?? item.idComponente
   return {
@@ -27,8 +39,8 @@ function toFrontendCertificado(certificado) {
     codigo: certificado.codigo,
     revision: certificado.revision || '',
     garantiaAnos: certificado.garantiaAnos || 1,
-    fechaDesde: certificado.fechaDesde ? String(certificado.fechaDesde).slice(0, 10) : '',
-    fechaHasta: certificado.fechaHasta ? String(certificado.fechaHasta).slice(0, 10) : '',
+    fechaDesde: toDateInputValue(certificado.fechaDesde),
+    fechaHasta: toDateInputValue(certificado.fechaHasta),
     condicionesHtml: certificado.condicionesHtml || '',
     empresaFirmante: certificado.empresaFirmante || undefined,
     firmanteNombre: preset?.firmanteNombre || certificado.firmanteNombre || '',
@@ -102,4 +114,13 @@ export async function updateCertificado(id, certificado, fetchOptions = {}) {
 
 export async function deleteCertificado(id, fetchOptions = {}) {
   await apiDelete(`${BASE_URL}/${id}`, fetchOptions)
+}
+
+export async function downloadCertificadoPdf(id) {
+  return apiGet(`${BASE_URL}/${id}/pdf`, { responseType: 'blob' })
+}
+
+export async function downloadCertificadoDraftPdf(certificado) {
+  const payload = toApiPayload(certificado)
+  return apiPost(`${BASE_URL}/pdf`, payload, { responseType: 'blob' })
 }

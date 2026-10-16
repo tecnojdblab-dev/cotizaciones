@@ -7,6 +7,7 @@ const {
   deleteCertificado,
 } = require('./certificados.service');
 const { createCertificadoSchema, updateCertificadoSchema, formatZodError } = require('./certificados.validation');
+const { buildCertificadoPdf } = require('./certificados.pdf');
 
 function parseId(value, label = 'id_certificado') {
   try {
@@ -77,4 +78,31 @@ async function remove(req, res) {
   }
 }
 
-module.exports = { list, getById, create, update, remove };
+async function getPdf(req, res) {
+  const certificado = await getCertificadoById(parseId(req.params.id));
+  if (!certificado) throw new HttpError(404, 'Certificado no encontrado');
+  const buffer = await buildCertificadoPdf(certificado);
+  const filename = `certificado-${certificado.codigo || certificado.idCertificado || 'garantia'}.pdf`;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.status(200).send(buffer);
+}
+
+async function downloadDraftPdf(req, res) {
+  const payload = req.body || {};
+  const buffer = await buildCertificadoPdf(payload);
+  const filename = `certificado-${payload.codigo || 'garantia'}.pdf`;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
+  res.status(200).send(buffer);
+}
+
+module.exports = {
+  list,
+  getById,
+  create,
+  update,
+  remove,
+  getPdf,
+  downloadDraftPdf,
+};
