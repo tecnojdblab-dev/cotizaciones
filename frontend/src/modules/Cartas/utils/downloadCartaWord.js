@@ -8,7 +8,7 @@ const PAPER_DIMENSIONS_MM = Object.freeze({
   a4: { width: 210, height: 297 },
 })
 
-const BASE_RUN_OPTIONS = Object.freeze({ font: 'Arial', size: 22, color: '000000' })
+const BASE_RUN_OPTIONS = Object.freeze({ font: 'Arial', size: 24, color: '000000' })
 const BODY_SPACING = Object.freeze({ after: 160, line: 276 })
 const HEADER_LOGO_SIZE = Object.freeze({
   width: Math.round(4.3 * 96 / 2.54),

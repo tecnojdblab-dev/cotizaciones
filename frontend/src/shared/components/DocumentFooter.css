@@ -2,7 +2,7 @@
   flex: none;
   padding-top: clamp(6px, 1.5cqw, 12px);
   border-top: clamp(1px, 0.35cqw, 3px) solid #4f9bd3;
-  font-size: 0.72em;
+  font-size: 10px;
   font-weight: 700;
   line-height: 1.35;
   text-align: center;

@@ -123,7 +123,7 @@
   background: #fff;
   box-shadow: 0 8px 28px rgba(15, 23, 42, 0.14);
   font-family: Arial, Helvetica, sans-serif;
-  font-size: clamp(9px, 1.85cqw, 15px);
+  font-size: 12px;
   line-height: 1.18;
 }
 
@@ -178,6 +178,11 @@
 .carta-preview__body {
   min-height: 100px;
   text-align: justify;
+  font-size: 12px;
+}
+
+.carta-preview__body * {
+  font-size: 12px !important;
 }
 
 .carta-preview__body p,
@@ -257,7 +262,7 @@
   width: 119.27%;
   margin-right: -9.635%;
   margin-left: -9.635%;
-  font-size: clamp(5.04px, 1.116cqw, 9.36px);
+  font-size: 10px;
 }
 
 .carta-preview--export {
@@ -430,7 +435,7 @@
   }
 
   .carta-preview {
-    font-size: clamp(7px, 2.2cqw, 12px);
+    font-size: 12px;
   }
 
   .carta-preview__signature {

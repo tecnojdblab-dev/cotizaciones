@@ -2,8 +2,7 @@ import { forwardRef } from 'react'
 import logoJdblab from '../../../../images/logojdblab.jpeg.png'
 import DocumentFooter from '../../../shared/components/DocumentFooter.jsx'
 import { FIRMANTE_PRESETS } from '../../../shared/utils/firmantePresets.js'
-import { getNotaTotal } from '../domain/nota.js'
-import { formatMoney, formatMoneyInWords, formatNotaDate } from '../utils/notaFormatters.js'
+import { formatNotaDate } from '../utils/notaFormatters.js'
 import './NotaPreview.css'
 
 function descriptionAsText(value) {
@@ -44,7 +43,7 @@ const NotaPreview = forwardRef(function NotaPreview({ nota }, ref) {
       <p className="nota-preview__intro">{nota.introduccion}</p>
 
       <table className="nota-preview__items-table">
-        <thead><tr><th>Ítem</th><th>Equipo y descripción</th><th>Código</th><th>N.º de serie</th><th>Cant.</th><th>P. unitario<br />Bs</th><th>Total Bs</th></tr></thead>
+        <thead><tr><th>Ítem</th><th>Equipo y descripción</th><th>Código</th><th>N.º de serie</th><th>Cant.</th></tr></thead>
         <tbody>
           {items.length ? items.map((item, index) => (
             <tr key={`${item.catalogoTipo || 'manual'}-${item.catalogoId || index}`}>
@@ -53,11 +52,8 @@ const NotaPreview = forwardRef(function NotaPreview({ nota }, ref) {
                 <div><strong>{item.nombre}</strong>{item.descripcion && <span>{descriptionAsText(item.descripcion)}</span>}</div>
               </td>
               <td>{item.codigo || '-'}</td><td>{item.numeroSerie || ''}</td><td>{item.cantidad}</td>
-              <td>{formatMoney(item.precioUnitario)}</td><td>{formatMoney(Number(item.cantidad) * Number(item.precioUnitario))}</td>
             </tr>
-          )) : <tr><td>1</td><td className="nota-preview__empty-item">AGREGUE UN PRODUCTO O COMPONENTE</td><td>-</td><td>-</td><td>1</td><td>0,00</td><td>0,00</td></tr>}
-          <tr className="nota-preview__total"><th colSpan="6">TOTAL Bs:</th><th>{formatMoney(getNotaTotal(nota))}</th></tr>
-          <tr className="nota-preview__total-in-words"><th colSpan="7">SON: {formatMoneyInWords(getNotaTotal(nota))}</th></tr>
+          )) : <tr><td>1</td><td className="nota-preview__empty-item">AGREGUE UN PRODUCTO O COMPONENTE</td><td>-</td><td>-</td><td>1</td></tr>}
         </tbody>
       </table>
 

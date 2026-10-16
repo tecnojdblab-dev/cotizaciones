@@ -251,7 +251,7 @@ function drawDocumentFooter(doc) {
 
   // Footer text line 1
   doc.font('Helvetica-Bold')
-    .fontSize(7.5)
+    .fontSize(9)
     .fillColor('#757575')
     .text(DOCUMENT_FOOTER_LINE_1, left, textY, {
       width: right - left,
