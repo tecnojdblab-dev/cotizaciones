@@ -17,8 +17,7 @@ function findFrontendImagesDir() {
 
 const FRONTEND_IMAGES_DIR = findFrontendImagesDir();
 
-const DOCUMENT_FOOTER_LINE_1 = 'TELÉFONO: 4-4292937 – CEL: 70769521 – AV. CIRCUNVALACIÓN, ENTRE C. VATICANO Y C.F. PÉREZ SAAVEDRA,';
-const DOCUMENT_FOOTER_LINE_2 = 'COCHABAMBA - BOLIVIA';
+const DOCUMENT_FOOTER_LINE = 'TEL: 4-4292937 - CEL: 70769521 - AV. CIRCUNVALACIÓN, ENTRE C. VATICANO Y C.F. PÉREZ SAAVEDRA - CBBA - BOLIVIA';
 
 const FIRMANTE_PRESETS = {
   tecnoequip: {
@@ -249,22 +248,15 @@ function drawDocumentFooter(doc) {
     .lineTo(right, lineY)
     .stroke();
 
-  // Footer text line 1
+  // Footer text
   doc.font('Helvetica-Bold')
-    .fontSize(9)
+    .fontSize(8)
     .fillColor('#757575')
-    .text(DOCUMENT_FOOTER_LINE_1, left, textY, {
+    .text(DOCUMENT_FOOTER_LINE, left, textY, {
       width: right - left,
       align: 'center',
       lineBreak: false,
     });
-
-  // Footer text line 2
-  doc.text(DOCUMENT_FOOTER_LINE_2, left, textY + 9, {
-    width: right - left,
-    align: 'center',
-    lineBreak: false,
-  });
 
   doc.page.margins.bottom = originalBottomMargin;
   doc.restore();
