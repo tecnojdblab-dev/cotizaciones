@@ -83,7 +83,7 @@ async function fetchWithRetry(url, options = {}, { maxRetries = 3, timeout = 300
 /**
  * Parsea el cuerpo del error HTTP (JSON o texto plano)
  */
-async function handleErrorResponse(res) {
+async function handleErrorResponse(res, { skipAuth = false } = {}) {
   const contentType = res.headers.get('content-type') || ''
   let errorMessage = `HTTP ${res.status}`
 
@@ -101,6 +101,17 @@ async function handleErrorResponse(res) {
 
   const error = new Error(errorMessage)
   error.status = res.status
+  const retryAfter = Number(res.headers.get('Retry-After'))
+  if (Number.isFinite(retryAfter) && retryAfter > 0) {
+    error.retryAfter = retryAfter
+  }
+
+  if (res.status === 401 && !skipAuth) {
+    localStorage.removeItem(TOKEN_STORAGE_KEY)
+    localStorage.removeItem('cotizaciones_auth_user')
+    window.dispatchEvent(new Event('auth-change'))
+  }
+
   return error
 }
 
@@ -135,7 +146,7 @@ export async function apiGet(path, { signal, responseType = 'json', headers, ski
     signal,
   })
 
-  if (!res.ok) throw await handleErrorResponse(res)
+  if (!res.ok) throw await handleErrorResponse(res, { skipAuth })
 
   return parseResponse(res, responseType)
 }
@@ -155,7 +166,7 @@ export async function apiPost(path, body, { signal, headers, responseType = 'jso
 
   const res = await fetchWithRetry(url, requestOptions)
 
-  if (!res.ok) throw await handleErrorResponse(res)
+  if (!res.ok) throw await handleErrorResponse(res, { skipAuth })
 
   return parseResponse(res, responseType)
 }
@@ -175,7 +186,7 @@ export async function apiPut(path, body, { signal, headers, responseType = 'json
 
   const res = await fetchWithRetry(url, requestOptions)
 
-  if (!res.ok) throw await handleErrorResponse(res)
+  if (!res.ok) throw await handleErrorResponse(res, { skipAuth })
 
   return parseResponse(res, responseType)
 }
@@ -190,7 +201,7 @@ export async function apiPatch(path, body, { signal, headers, responseType = 'js
     signal,
   })
 
-  if (!res.ok) throw await handleErrorResponse(res)
+  if (!res.ok) throw await handleErrorResponse(res, { skipAuth })
 
   return parseResponse(res, responseType)
 }
@@ -204,7 +215,7 @@ export async function apiDelete(path, { signal, headers, responseType = 'json', 
     signal,
   })
 
-  if (!res.ok) throw await handleErrorResponse(res)
+  if (!res.ok) throw await handleErrorResponse(res, { skipAuth })
 
   return parseResponse(res, responseType)
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Button,
@@ -27,8 +27,15 @@ const { Title, Paragraph, Text } = Typography
 export default function HomePage() {
   const [loginOpen, setLoginOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [retrySeconds, setRetrySeconds] = useState(0)
   const [form] = Form.useForm()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (retrySeconds <= 0) return undefined
+    const timer = window.setTimeout(() => setRetrySeconds((seconds) => seconds - 1), 1000)
+    return () => window.clearTimeout(timer)
+  }, [retrySeconds])
 
   const handleLogin = async (values) => {
     setLoading(true)
@@ -41,6 +48,9 @@ export default function HomePage() {
       form.resetFields()
       navigate('/dashboard', { replace: true })
     } catch (err) {
+      if (err.status === 429 && err.retryAfter) {
+        setRetrySeconds(err.retryAfter)
+      }
       message.error(err.message || 'No se pudo iniciar sesión')
     } finally {
       setLoading(false)
@@ -136,8 +146,17 @@ export default function HomePage() {
               />
             </Form.Item>
 
-            <Button type="primary" htmlType="submit" block loading={loading} icon={<LoginOutlined />}>
-              Ingresar
+            <Button
+              type="primary"
+              htmlType="submit"
+              block
+              loading={loading}
+              disabled={retrySeconds > 0}
+              icon={<LoginOutlined />}
+            >
+              {retrySeconds > 0
+                ? `Intenta de nuevo en ${Math.floor(retrySeconds / 60)}:${String(retrySeconds % 60).padStart(2, '0')}`
+                : 'Ingresar'}
             </Button>
           </Form>
         </Card>

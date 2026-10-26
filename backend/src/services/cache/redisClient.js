@@ -5,7 +5,7 @@ const REDIS_URL = process.env.REDIS_URL || '';
 let redis = null;
 let enabled = false;
 
-if (REDIS_URL && REDIS_URL.startsWith('redis://')) {
+if (REDIS_URL && /^rediss?:\/\//.test(REDIS_URL)) {
   redis = new Redis(REDIS_URL, {
     maxRetriesPerRequest: 1,
     retryStrategy: (times) => (times > 3 ? null : Math.min(times * 200, 2000)),
